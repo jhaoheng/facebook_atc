@@ -55,18 +55,18 @@ dhcp-range=10.0.7.101,10.0.7.200,255.255.255.0,12h
 1. `sudo apt-get install hostapd -y`
 2. `gunzip -c /usr/share/doc/hostapd/examples/hostapd.conf.gz > /etc/hostapd/hostapd.conf`
 3. 編輯 hostapd.conf
-  1. `interface=wlan0`
-  2. `driver=nl80211`
-  3. `ssid=RPI-AP`
-  4. `hw_mode=g`
-  5. `channel=11`
-  6. `macaddr_acl=0`
-  7. `auth_algs=1`
-  8. `ignore_broadcast_ssid=0`
-  9. `wpa=2`
-  10. `wpa_passphrase=12345678` : 設定無線網路密碼
-  11. `wpa_key_mgmt=WPA-PSK`
-  13. `rsn_pairwise=CCMP`
+   1. `interface=wlan0`
+   2. `driver=nl80211`
+   3. `ssid=RPI-AP`
+   4. `hw_mode=g`
+   5. `channel=11`
+   6. `macaddr_acl=0`
+   7. `auth_algs=1`
+   8. `ignore_broadcast_ssid=0`
+   9. `wpa=2`
+   10. `wpa_passphrase=12345678` : 設定無線網路密碼
+   11. `wpa_key_mgmt=WPA-PSK`
+   13. `rsn_pairwise=CCMP`
   
 ### 測試 ap
 1. 測試 : `sudo hostapd -dd /etc/hostapd/hostapd.conf`
