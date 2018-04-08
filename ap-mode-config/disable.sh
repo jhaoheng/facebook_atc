@@ -16,3 +16,5 @@ sudo systemctl stop dnsmasq && sudo systemctl disable dnsmasq
 
 # hostapd
 sed -i '/hostapd/d'  /etc/rc.local
+
+reboot
