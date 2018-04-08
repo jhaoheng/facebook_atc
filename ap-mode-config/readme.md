@@ -10,27 +10,27 @@
 > 目的 : 透過 iptable 的設定，交換 wifi ap(wlan0) 與 eth0 的網路資訊
 
 1. 開啟 ipv4 路由轉發功能，檔案位置 `/etc/sysctl.conf`
-  - 查詢 : `cat /etc/sysctl.conf | grep ip_forward`
-  - 變更設定 : 
-    - 至 `/etc/sysctl.conf`，找到 `net.ipv4.ip_forward` 並設定為 1
-    - 或透過指令變更 : `sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf`
+   - 查詢 : `cat /etc/sysctl.conf | grep ip_forward`
+   - 變更設定 : 
+      - 至 `/etc/sysctl.conf`，找到 `net.ipv4.ip_forward` 並設定為 1
+      - 或透過指令變更 : `sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf`
 2. 更新 iptable，將內部的 wlan0 封包轉給 eth0，詳細原理可參考 : `http://web.mit.edu/rhel-doc/4/RH-DOCS/rhel-sg-zh_tw-4/s1-firewall-ipt-fwd.html`
-  1. 清除設定
-    - `sudo iptables -F && sudo iptables -F -t nat`
-  2. 設定 NAT
-    - 要讓使用私有 IP 的電腦與外部公眾網路連線，需設定防火牆為 IP 偽裝（IP masquerading），把來自區網內部交通的位址，換成防火牆的外部 IP 位址（此例為 eth0）
-      - `sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE`
-      - 查看設定 : `sudo iptables -t nat -S`
-    - FORWARD 政策允許系統管理員控制封包在區網內部的傳送, 送給誰, 誰接收
-      - `sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT`
-      - `sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT`
-      - 查看設定 : 
-        - `sudo iptables -S`
-        - `sudo iptables -L`
+   1. 清除設定
+      - `sudo iptables -F && sudo iptables -F -t nat`
+   2. 設定 NAT
+      - 要讓使用私有 IP 的電腦與外部公眾網路連線，需設定防火牆為 IP 偽裝（IP masquerading），把來自區網內部交通的位址，換成防火牆的外部 IP 位址（此例為 eth0）
+          - `sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE`
+          - 查看設定 : `sudo iptables -t nat -S`
+      - FORWARD 政策允許系統管理員控制封包在區網內部的傳送, 送給誰, 誰接收
+          - `sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT`
+          - `sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT`
+          - 查看設定 : 
+              - `sudo iptables -S`
+              - `sudo iptables -L`
 3. 儲存設定，讓每次網路啟動都使用此設定
-  1. `sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"`
-  2. `vim /etc/rc.local`
-    - 在 `exit 0` 之前，加入`sudo iptables-restore < /etc/iptables.ipv4.nat`
+   1. `sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"`
+   2. `vim /etc/rc.local`
+      - 在 `exit 0` 之前，加入`sudo iptables-restore < /etc/iptables.ipv4.nat`
 
 
 ## 設定 DHCP client
@@ -38,8 +38,8 @@
 
 1. 編輯 DHCP Client 設定資訊 : `vim /etc/dhcpcd.conf`
 2. 在最下方，新增
-  1. `interface  wlan0`
-  2. `static ip_address=10.0.7.1/24` : 指定 wlan0 的 ip 位置
+   1. `interface  wlan0`
+   2. `static ip_address=10.0.7.1/24` : 指定 wlan0 的 ip 位置
 
 ## 架設 DHCP Server
 1. `sudo apt-get -y install dnsmasq`
@@ -70,8 +70,8 @@ dhcp-range=10.0.7.101,10.0.7.200,255.255.255.0,12h
   
 ### 測試 ap
 1. 測試 : `sudo hostapd -dd /etc/hostapd/hostapd.conf`
-  - 測試時，可以透過其他裝置，並連接上 wifi ap
-  - 如果連接得上，但沒有辦法看網頁，為 iptables 設定錯誤，請檢查你的 iptables
+    - 測試時，可以透過其他裝置，並連接上 wifi ap
+    - 如果連接得上，但沒有辦法看網頁，為 iptables 設定錯誤，請檢查你的 iptables
 
 ### run hostapd in daemon
 1. `vim /etc/rc.local`
@@ -80,9 +80,9 @@ dhcp-range=10.0.7.101,10.0.7.200,255.255.255.0,12h
 # troubleshooting
 
 1. 找不到 ssid
-  - 請重新啟動 hostapd
+   - 請重新啟動 hostapd
 2. 連上 ssid，卻無法連到外部網路
-  - 請檢查 iptables
+   - 請檢查 iptables
 
 ## 檢查錯誤訊息
 - `/var/log/syslog`
