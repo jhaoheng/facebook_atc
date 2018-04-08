@@ -1,4 +1,6 @@
-
+# 自動設定
+1. 設定 ap-mode : `enable.sh`
+2. 取消 ap-mode : `disable.sh`
 
 -- 以下為手動設定 --
 

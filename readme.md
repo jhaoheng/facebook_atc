@@ -1,3 +1,29 @@
+# Run facebook-atc step
+1. 確認是在 virtual environment 下 : `source ~/dev/atc/venv/bin/activate`
+2. 確認 wifi 在 ap mode 狀態下 : 參考 'ap-mode-config' 資料夾
+3. 執行 atcd daemon : `atcd --atcd-lan 對內 --atcd-wan 對外`
+4. 執行 website app : `cd facebook_atc/webapp && python manage.py runserver 0.0.0.0:8000`
+  - 確定有在 virtualenv 環境下
+5. 透過 client 端連線到 raspberry 的 ap 下，開啟 10.0.7.1:8000
+
+## 使用
+1. 開啟瀏覽器並打開 atc_demo_ui 的管理介面
+2. 主要設置的參數有：
+  - 網絡帶寬（bandwidth）
+  - 延遲（latency）
+  - 丟包率（packet loss）
+  - 錯包率（corrupted packets）
+  - 亂序率（packets ordering）
+3. 新增 new profile 與 shaping settings 後，可在 Profiles 中看到設定的參數值，選擇後再開啟最上方的 trun on 即可
+  - Network Condition Profiles 參考 : https://github.com/tylertreat/Comcast#network-condition-profiles
+
+> 設定參考
+![img](./img.png)
+
+# raspberry ap-mode 設定
+參考 ap-mode-config
+
+# 設定與安裝 atc
 ## 環境
 1. raspberry pi 3 model B
   - 支援 wifi & ethernet
@@ -14,47 +40,28 @@
 3. 執行 `route` 指令, 在 default 下可看到, 兩張網卡目前都有在運作
   - 目標就是透過 iptable 的方式，建立 wifi 與 ethernet 的橋接
 
-# Requirements
-## virtual environment : (optional)
+## 安裝 : virtual environment : (optional)
 - install : `pip install virtualenv`
 - configure :
   - `mkdir -p ~/dev/atc`
   - `virtualenv ~/dev/atc/venv`
   - `source ~/dev/atc/venv/bin/activate`
 
-## ATC Daemon
+## 安裝 : ATC Daemon
+> 確定在 virtualenv 環境下
+
 - install : `pip install atcd atc_thrift`
 - Run for test : `atcd --atcd-lan {wifi} --atcd-wan {ethernet}`
   - ex : `atcd --atcd-lan wlan0 --atcd-wan eth0`
   - use ifconfig to check lan & wan
   - 必須將 wifi 設定為 ap mode, 不然會有錯誤
 
-## ATC UI Interface
+## 安裝 : ATC UI Interface
+> 確定在 virtualenv 環境下
+
 - `pip install django-atc-api django-atc-demo-ui django-atc-profile-storage`
 - download github repo : `git clone https://github.com/jhaoheng/facebook_atc.git`
 - init : `cd facebook_atc/webapp && python manage.py migrate`
 
-# raspberry wifi 設定 
-## 設定為 ap mode
-## 設定回預設狀態
-
-# Run facebook-atc step
-1. 確認是在 virtual environment 下 : `source ~/dev/atc/venv/bin/activate`
-2. 確認 wifi 在 ap mode 狀態下 : 參考 'ap-mode-config' 資料夾
-3. 執行 atcd daemon : `atcd --atcd-lan 對內 --atcd-wan 對外`
-4. 執行 website app : `cd facebook_atc/webapp && python manage.py runserver 0.0.0.0:8000`
-
-# 使用
-
-1. 開啟瀏覽器並打開 atc_demo_ui 的管理介面
-2. 主要設置的參數有：
-  - 網絡帶寬（bandwidth）
-  - 延遲（latency）
-  - 丟包率（packet loss）
-  - 錯包率（corrupted packets）
-  - 亂序率（packets ordering）
-3. 新增 new profile 與 shaping settings 後，可在 Profiles 中看到設定的參數值，選擇後再開啟最上方的 trun on 即可
-  - Network Condition Profiles 參考 : https://github.com/tylertreat/Comcast#network-condition-profiles
-
-> 設定參考
-![img](./img.png)
+## final
+執行最上方的 [Run facebook-atc step] 即可
